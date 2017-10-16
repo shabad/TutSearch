@@ -3,14 +3,78 @@
  include_once 'db.php';
 
 if ( isset($_POST['register']) ) {
+
     $name = $_POST['name'];
+
     $email = $_POST['email'];
-    $password = $_POST['name'];
+
+    $password = $_POST['password'];
+
     $phone = $_POST['phone'];
+
     $subject = $_POST['subject'];
+
+
+
+
+   // basic name validation
+  if (empty($name)) {
+   $error = true;
+   $nameError = "Please enter your full name.";
+  } else if (strlen($name) < 3) {
+   $error = true;
+   $nameError = "Name must have atleat 3 characters.";
+  } 
+
+
+ //basic email validation
+  if ( !filter_var($email,FILTER_VALIDATE_EMAIL) ) {
+   $error = true;
+   $emailError = "Please enter valid email address.";
+  } else {
+   // check email exist or not
+   $query = "SELECT email FROM users WHERE email='$email'";
+   $result = mysql_query($query);
+   $count = mysql_num_rows($result);
+   if($count!=0){
+    $error = true;
+    $emailError = "Provided Email is already in use.";
+   }
+  }
+
+  // password validation
+  if (empty($password)){
+   $error = true;
+   $passError = "Please enter password.";
+  } else if(strlen($password) < 6) {
+   $error = true;
+   $passError = "Password must have atleast 6 characters.";
+  }
+
+
+
+$password = md5($password);
+
+ if( !$error ) {
+
+
+
         $query = "INSERT INTO users(name,email,password, phone, subject) VALUES('".$name."','".$email."','".$password."', '".$phone."', '".$subject."')";
+       
         $res = mysql_query($query);
+           if ($res) {
+    $errTyp = "success";
+    $errMSG = "Successfully registered, you may login now";
+    unset($name);
+    unset($email);
+    unset($pass);
+   } else {
+    $errTyp = "danger";
+    $errMSG = "Something went wrong, try again later..."; 
+   }
+
     }
+}
 
 ?>
     
@@ -113,28 +177,48 @@ if ( isset($_POST['register']) ) {
                 <h3>Register</h3>
                 <br>
                 <form name="form" id="form" method="post" action = <?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?> >
+
+                	<?php
+   if ( isset($errMSG) ) {
+    
+    ?>
+           <div class="alert alert-<?php echo ($errTyp=="success") ? "success" : $errTyp; ?>">
+    <span class="glyphicon glyphicon-info-sign"></span> <?php echo $errMSG; ?>
+                </div>
+
+                   <?php
+                }
+                ?>
+
+   
                     
                             <label>Full Name:</label>
                             <input type="text" class="form-control" placeholder = "Full Name" name="name">
+                            <span class="text-danger"><?php echo $nameError; ?></span>
+                            <br>
                         
                             <label>Phone Number:</label>
                             <input type="text" class="form-control" placeholder = "Phone" name="phone">
 
-       
+       <br>
                             <label>Email:</label>
                             <input type="email" class="form-control" placeholder = "Email" name="email">
-        
-
+        <span class="text-danger"><?php echo $emailError; ?></span>
+<br>
        
                             <label>Password:</label>
                             <input type="password" class="form-control" placeholder = "Password" name="password">
-            
+            <span class="text-danger"><?php echo $passError; ?></span>
+            <br>
                             <label>Subject:</label>
                             <input type="text" class="form-control" placeholder = "Subject" name="subject">
 
                     <div id="success"></div>
+                    <br>
                     <!-- For success/fail messages -->
                     <button type="submit" class="btn btn-primary" id = "register" name = "register">Register</button>
+
+
                 </form>
             </div>
         </div>
