@@ -51,6 +51,7 @@ if ( isset($_POST['register']) ) {
    $passError = "Password must have atleast 6 characters.";
   }
 
+
 function unsetFields(){
     unset($name);
     unset($email);
@@ -194,8 +195,6 @@ $password = md5($password);
                 }
                 ?>
 
-   
-                    
                             <label>Full Name:</label>
                             <input type="text" class="form-control" placeholder = "Full Name" name="name">
                             <span class="text-danger"><?php echo $nameError; ?></span>
