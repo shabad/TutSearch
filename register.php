@@ -15,22 +15,22 @@ if ( isset($_POST['register']) ) {
     $subject = $_POST['subject'];
 
 
-
+$errors = array("Please enter your full name.", "Name must have atleat 3 characters.", "Please enter valid email address.", "Provided Email is already in use.", "Please enter password.", "Password must have atleast 6 characters.");
 
    // basic name validation
   if (empty($name)) {
    $error = true;
-   $nameError = "Please enter your full name.";
+   $nameError = $errors[0];
   } else if (strlen($name) < 3) {
    $error = true;
-   $nameError = "Name must have atleat 3 characters.";
+   $nameError = $errors[1];
   } 
 
 
  //basic email validation
   if ( !filter_var($email,FILTER_VALIDATE_EMAIL) ) {
    $error = true;
-   $emailError = "Please enter valid email address.";
+   $emailError = $errors[2];
   } else {
    // check email exist or not
    $query = "SELECT email FROM users WHERE email='$email'";
@@ -38,17 +38,17 @@ if ( isset($_POST['register']) ) {
    $count = mysql_num_rows($result);
    if($count!=0){
     $error = true;
-    $emailError = "Provided Email is already in use.";
+    $emailError = $errors[3];
    }
   }
 
   // password validation
   if (empty($password)){
    $error = true;
-   $passError = "Please enter password.";
+   $passError = $errors[4];
   } else if(strlen($password) < 6) {
    $error = true;
-   $passError = "Password must have atleast 6 characters.";
+   $passError = $errors[5];
   }
 
 
