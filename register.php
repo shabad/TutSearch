@@ -51,6 +51,11 @@ if ( isset($_POST['register']) ) {
    $passError = "Password must have atleast 6 characters.";
   }
 
+function unsetFields(){
+    unset($name);
+    unset($email);
+    unset($pass);
+}
 
 
 $password = md5($password);
@@ -65,9 +70,8 @@ $password = md5($password);
            if ($res) {
     $errTyp = "success";
     $errMSG = "Successfully registered, you may login now";
-    unset($name);
-    unset($email);
-    unset($pass);
+    unsetFields();
+
    } else {
     $errTyp = "danger";
     $errMSG = "Something went wrong, try again later..."; 
